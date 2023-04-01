@@ -46,8 +46,71 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Checks\DataMistake.cs" />
+    <Compile Include="Devices\DesktopPC.cs" />
+    <Compile Include="Devices\ElectronicWatches.cs" />
+    <Compile Include="Devices\InteractionIntefaceMobile.cs" />
+    <Compile Include="Devices\InteractionInterfaceGeneral.cs" />
+    <Compile Include="Devices\InteractionInterfacePC.cs" />
+    <Compile Include="Devices\Laptop.cs" />
+    <Compile Include="Devices\ProcessorInfo.cs" />
+    <Compile Include="Devices\Smartphone.cs" />
+    <Compile Include="Factories\DesktopFactory.cs" />
+    <Compile Include="Factories\DeviceFactory.cs" />
+    <Compile Include="Factories\DeviceInterface.cs" />
+    <Compile Include="Factories\ElectronicWatchesFactory.cs" />
+    <Compile Include="Factories\LaptopFactory.cs" />
+    <Compile Include="Factories\SmartphoneFactory.cs" />
+    <Compile Include="Forms\DesktopPropertiesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DesktopPropertiesForm.Designer.cs">
+      <DependentUpon>DesktopPropertiesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\LaptopPropertiesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LaptopPropertiesForm.Designer.cs">
+      <DependentUpon>LaptopPropertiesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SmartphonePropertiesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SmartphonePropertiesForm.Designer.cs">
+      <DependentUpon>SmartphonePropertiesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\WatchPropertiesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\WatchPropertiesForm.Designer.cs">
+      <DependentUpon>WatchPropertiesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Structure\DeviceData.cs" />
+    <Compile Include="Structure\DeviceTypeEnum.cs" />
+    <Compile Include="Structure\DeviceTypeIndexing.cs" />
+    <EmbeddedResource Include="Forms\DesktopPropertiesForm.resx">
+      <DependentUpon>DesktopPropertiesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\LaptopPropertiesForm.resx">
+      <DependentUpon>LaptopPropertiesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SmartphonePropertiesForm.resx">
+      <DependentUpon>SmartphonePropertiesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\WatchPropertiesForm.resx">
+      <DependentUpon>WatchPropertiesForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -70,5 +133,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
