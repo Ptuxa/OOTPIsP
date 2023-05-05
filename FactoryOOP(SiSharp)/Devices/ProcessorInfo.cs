@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,15 +7,24 @@ using System.Threading.Tasks;
 
 namespace FactoryOOP_SiSharp_.Devices
 {
+    [Serializable]
     public class ProcessorInfo
     {
+        [JsonProperty]
         private string CPUMicroarchitecture;
+
+        [JsonProperty]
         private int clockFrequency;
 
         public ProcessorInfo(string CPUMicroarchitecture, int clockFrequency) 
         {
             this.CPUMicroarchitecture = CPUMicroarchitecture;
             this.clockFrequency = clockFrequency;
+        }
+
+        public ProcessorInfo()
+        {
+
         }
 
         public string GetCPUMicroarchitecture()

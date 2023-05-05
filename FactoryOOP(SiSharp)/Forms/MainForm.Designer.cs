@@ -43,6 +43,8 @@
             this.btnRemove = new System.Windows.Forms.Button();
             this.lblInfoDevices = new System.Windows.Forms.Label();
             this.txtbxDeviceProperties = new System.Windows.Forms.TextBox();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -73,6 +75,7 @@
             this.mnOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.mnOpen.Size = new System.Drawing.Size(154, 22);
             this.mnOpen.Text = "Open";
+            this.mnOpen.Click += new System.EventHandler(this.mnOpen_Click);
             // 
             // mnSave
             // 
@@ -80,6 +83,7 @@
             this.mnSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.mnSave.Size = new System.Drawing.Size(154, 22);
             this.mnSave.Text = "Save";
+            this.mnSave.Click += new System.EventHandler(this.mnSave_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -175,6 +179,10 @@
             this.txtbxDeviceProperties.Size = new System.Drawing.Size(212, 381);
             this.txtbxDeviceProperties.TabIndex = 10;
             // 
+            // openFileDialog
+            // 
+            this.openFileDialog.FileName = "openFileDialog1";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -217,6 +225,8 @@
         private System.Windows.Forms.Button btnRemove;
         private System.Windows.Forms.Label lblInfoDevices;
         private System.Windows.Forms.TextBox txtbxDeviceProperties;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
     }
 }
 

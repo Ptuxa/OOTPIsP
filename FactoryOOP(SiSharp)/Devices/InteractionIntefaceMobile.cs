@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,15 +7,24 @@ using System.Threading.Tasks;
 
 namespace FactoryOOP_SiSharp_.Devices
 {
+    [Serializable]
     public class InteractionIntefaceMobile : InteractionInterfaceGeneral
     {
-        private bool frontLightning;
-        private ProcessorInfo processor;
+        [JsonProperty]
+        protected bool frontLightning;
+
+        [JsonProperty]
+        protected ProcessorInfo processor;
 
         public InteractionIntefaceMobile(bool frontLightning, ProcessorInfo processor, bool NFC, string bluetooth) : base(NFC, bluetooth)
         {
             this.frontLightning = frontLightning;
             this.processor = processor;
+        }
+
+        public InteractionIntefaceMobile()
+        {
+            processor = new ProcessorInfo();
         }
 
         public bool GetFrontLightning()
@@ -32,7 +42,7 @@ namespace FactoryOOP_SiSharp_.Devices
             return processor;
         }
 
-        public void SetProcessor(ProcessorInfo processor)
+        public void SetProcessorInfo(ProcessorInfo processor)
         {
             this.processor = processor;
         }

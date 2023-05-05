@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,15 +7,24 @@ using System.Threading.Tasks;
 
 namespace FactoryOOP_SiSharp_.Devices
 {
+    [Serializable]
     public class ElectronicWatches : InteractionIntefaceMobile
     {
+        [JsonProperty]
         private bool ECGSensor;
+
+        [JsonProperty]
         private bool bloodPressureMeasurement;
 
         public ElectronicWatches(bool ECGSensor, bool bloodPressureMeasurement, bool frontLightning, ProcessorInfo processor, bool NFC, string bluetooth) : base(frontLightning, processor, NFC, bluetooth)
         {
             this.ECGSensor = ECGSensor;
             this.bloodPressureMeasurement = bloodPressureMeasurement;
+        }
+
+        public ElectronicWatches()
+        {
+
         }
 
         public bool GetECGSensor()

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace FactoryOOP_SiSharp_.Structure
 {
+    [Serializable]
     public enum DeviceTypeEnum
     {
         DESKTOP_PC,

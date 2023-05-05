@@ -10,7 +10,9 @@ using System.Windows.Forms;
 using FactoryOOP_SiSharp_.Devices;
 using FactoryOOP_SiSharp_.Factories;
 using FactoryOOP_SiSharp_.Structure;
-
+using FactoryOOP_SiSharp_.Serializers;
+using System.IO;
+using System.Reflection;
 
 namespace FactoryOOP_SiSharp_.Forms
 {
@@ -25,8 +27,9 @@ namespace FactoryOOP_SiSharp_.Forms
         };
 
         List<DeviceData> listEndDevices = new List<DeviceData>();
-
+              
         DeviceFactory abstractFactory = new DeviceFactory();
+        SerializeFactory serializeFactory = new SerializeFactory();
 
 
 
@@ -47,6 +50,9 @@ namespace FactoryOOP_SiSharp_.Forms
         {
             InitializeComponent();
             loadTypesDevicesInComboBox(ref cmbxSelectDevices, listTypesDevices);
+
+            openFileDialog.InitialDirectory = Environment.CurrentDirectory;
+            saveFileDialog.InitialDirectory = Environment.CurrentDirectory;
         }
 
 
@@ -120,7 +126,118 @@ namespace FactoryOOP_SiSharp_.Forms
                 outputDescriptionInTextBox(ref txtbxDeviceProperties, listEndDevices[lstbxDevices.SelectedIndex].getDescription());
             }
             
-        }        
+        }
+
+        private void outputAllDevicesNamesInListBox(ref ListBox lstbxDevices, List<DeviceData> listEndDevices)
+        {
+            lstbxDevices.Items.Clear();
+
+            for (int i = 0; i < listEndDevices.Count; i++)
+            {
+                lstbxDevices.Items.Add(listEndDevices[i].getName());
+            }            
+        }
+
+        private string findNameTypeDeviceByIndex(List<DeviceTypeIndexing> listTypesDevices, DeviceTypeEnum index)
+        {
+            string name = "";
+            bool isFind = false;
+            int i = 0;            
+            while (i < listTypesDevices.Count && !isFind)
+            {
+                if (listTypesDevices[i].getIndex() == index)
+                {
+                    isFind = true;
+                    name = listTypesDevices[i].getName();
+                }
+                else
+                {
+                    i++;
+                }
+            }
+
+            return name;
+        }
+
+        public List<DeviceData> takeListEndDevices(List<DataFileStructure> listDataFileStructure, List<DeviceTypeIndexing> listTypesDevices)
+        {
+            List<DeviceData> listEndDevices = new List<DeviceData>();
+
+            for (int i = 0; i < listDataFileStructure.Count; i++)
+            {
+                DeviceTypeEnum indexEnum = listDataFileStructure[i].getIndex();
+                listEndDevices.Add(new DeviceData(listDataFileStructure[i].getDevice(), listDataFileStructure[i].getDevice().ToString(), indexEnum, findNameTypeDeviceByIndex(listTypesDevices, indexEnum)));
+                //listEndDevices[i].setDevice();
+                //listEndDevices[i].setIndex(listDataFileStructure[i].getIndex());
+            }
+
+            return listEndDevices;
+        }
+
+        private void mnOpen_Click(object sender, EventArgs e)
+        {
+            string filterStr = serializeFactory.takeStringFilterFromDictionary();
+            if (filterStr != "")
+            {
+                openFileDialog.Filter = filterStr;
+            }
+                        
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string path = openFileDialog.FileName;
+                string extension = path.Substring(path.LastIndexOf(".") + 1);
+                FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+
+                Type typeSerializator = serializeFactory.takeTypeSerializator(extension);
+                SerializeInterface serializator = (SerializeInterface) Activator.CreateInstance(typeSerializator);
+
+                List<DataFileStructure> tempList = serializator.deserialize(fileStream);
+                if (tempList != null)
+                {
+                    listEndDevices = takeListEndDevices(tempList, listTypesDevices);
+                    outputAllDevicesNamesInListBox(ref lstbxDevices, listEndDevices);
+                    txtbxDeviceProperties.Clear();
+
+                    if (listEndDevices.Count != 0)
+                    {                        
+                        lstbxDevices.SelectedIndex = 0;
+                        outputDescriptionInTextBox(ref txtbxDeviceProperties, listEndDevices[lstbxDevices.SelectedIndex].getDescription());
+                    }                    
+                }                                               
+            }
+        }
+
+        public List<DataFileStructure> takeListForFileStrucuture(List<DeviceData> listEndDevices)
+        {
+            List<DataFileStructure> listDataFileStructure = new List<DataFileStructure>();
+
+            for (int i = 0; i < listEndDevices.Count; i++)
+            {
+                listDataFileStructure.Add(new DataFileStructure(listEndDevices[i].getIndex(), listEndDevices[i].getDevice()));
+            }
+
+            return listDataFileStructure;
+        }
+
+        private void mnSave_Click(object sender, EventArgs e)
+        {
+            string filterStr = serializeFactory.takeStringFilterFromDictionary();
+            if (filterStr != "")
+            {
+                saveFileDialog.Filter = filterStr;
+            }
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string path = saveFileDialog.FileName;
+                string extension = path.Substring(path.LastIndexOf(".") + 1);
+                FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+
+                Type typeSerializator = serializeFactory.takeTypeSerializator(extension);
+                SerializeInterface serializator = (SerializeInterface)Activator.CreateInstance(typeSerializator);
+                serializator.serialize(takeListForFileStrucuture(listEndDevices), fileStream);
+            }
+        }
     }
 }
 

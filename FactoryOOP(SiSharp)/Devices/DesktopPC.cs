@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,13 +7,20 @@ using System.Threading.Tasks;
 
 namespace FactoryOOP_SiSharp_.Devices
 {
+    [Serializable]
     public class DesktopPC : InteractionInterfacePC
     {
+        [JsonProperty]
         private bool monoblock;
 
         public DesktopPC(bool monoblock, int maximumUSBTransferRate, ProcessorInfo processor, bool NFC, string bluetooth) : base(maximumUSBTransferRate, processor, NFC, bluetooth)
         {
             this.monoblock = monoblock;
+        }
+
+        public DesktopPC()
+        {
+
         }
 
         public bool GetMonoblock()

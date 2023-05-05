@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,13 @@ using System.Threading.Tasks;
 
 namespace FactoryOOP_SiSharp_.Devices
 {
+    [Serializable]
     public class Smartphone : InteractionIntefaceMobile
     {
+        [JsonProperty]
         private string audioTypeSupportLinks;
+        
+        [JsonProperty]
         private string connectionConnector;
 
         public Smartphone(string audioTypeSupportLinks, string connectionConnector, bool frontLightning, ProcessorInfo processor, bool NFC, string bluetooth) : base(frontLightning, processor, NFC, bluetooth)
@@ -17,12 +22,17 @@ namespace FactoryOOP_SiSharp_.Devices
             this.connectionConnector = connectionConnector;
         }
 
+        public Smartphone()
+        {
+
+        }
+
         public string GetAudioTypeSupportLinks()
         {
             return audioTypeSupportLinks;
         }
 
-        public void SetMonoblock(string audioTypeSupportLinks)
+        public void SetAudioTypeSupportLinks(string audioTypeSupportLinks)
         {
             this.audioTypeSupportLinks = audioTypeSupportLinks;
         }

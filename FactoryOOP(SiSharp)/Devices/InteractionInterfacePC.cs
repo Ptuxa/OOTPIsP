@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,15 +7,24 @@ using System.Threading.Tasks;
 
 namespace FactoryOOP_SiSharp_.Devices
 {
+    [Serializable]
     public class InteractionInterfacePC : InteractionInterfaceGeneral
     {
-        private int maximumUSBTransferRate;
-        private ProcessorInfo processor;
+        [JsonProperty]
+        protected int maximumUSBTransferRate;
+
+        [JsonProperty]
+        protected ProcessorInfo processor;
 
         public InteractionInterfacePC(int maximumUSBTransferRate, ProcessorInfo processor, bool NFC, string bluetooth) : base(NFC, bluetooth)
         {       
             this.maximumUSBTransferRate = maximumUSBTransferRate;
             this.processor = processor;
+        }
+
+        public InteractionInterfacePC()
+        {
+            processor = new ProcessorInfo();
         }
 
         public int GetMaximumUSBTransferRate()
@@ -32,7 +42,7 @@ namespace FactoryOOP_SiSharp_.Devices
             return processor;
         }
 
-        public void SetProcessor(ProcessorInfo processor)
+        public void SetProcessorInfo(ProcessorInfo processor)
         {
             this.processor = processor;
         }
