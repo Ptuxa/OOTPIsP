@@ -19,7 +19,7 @@ namespace FactoryOOP_SiSharp_.Serializers
 {
     public class SerializerJson : SerializeInterface
     {        
-        public void serialize(List<DataFileStructure> listDataFileStructure, FileStream fileStream)
+        public void serialize(List<DataFileStructure> listDataFileStructure, Stream fileStream)
         {
             var serializer = new JsonSerializer();
             var streamWriter = new StreamWriter(fileStream);
@@ -33,18 +33,18 @@ namespace FactoryOOP_SiSharp_.Serializers
             {
                 DialogResult result = MessageBox.Show("Can't serialize data succcessfully", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
             }
-            finally
-            {
-                jsonTextWriter.Close();
-                streamWriter.Close();
-                fileStream.Close();
-            }
+            //finally
+            //{
+            //    jsonTextWriter.Close();
+            //    streamWriter.Close();
+            //}
         }
 
-        public List<DataFileStructure> deserialize(FileStream fileStream)
+        public List<DataFileStructure> deserialize(Stream fileStream)
         {
             List<DataFileStructure> listDataFileStructure = null;
 
+            fileStream.Position = 0;
             var serializer = new JsonSerializer();
             var streamReader = new StreamReader(fileStream);
             var jsonTextReader = new JsonTextReader(streamReader);
@@ -58,12 +58,11 @@ namespace FactoryOOP_SiSharp_.Serializers
                 DialogResult result = MessageBox.Show("Can't deserialize data succcessfully", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 listDataFileStructure = null;
             }
-            finally
-            {
-                jsonTextReader.Close();
-                streamReader.Close();
-                fileStream.Close();
-            }
+            //finally
+            //{
+            //    jsonTextReader.Close();
+            //    streamReader.Close();
+            //}
 
             return listDataFileStructure;
         }

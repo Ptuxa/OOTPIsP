@@ -1,4 +1,5 @@
 ﻿using FactoryOOP_SiSharp_.Devices;
+using FactoryOOP_SiSharp_.Plugins;
 using FactoryOOP_SiSharp_.Structure;
 using System;
 using System.Collections.Generic;
@@ -27,25 +28,6 @@ namespace FactoryOOP_SiSharp_.Serializers
             };
         }
 
-        public string takeStringFilterFromDictionary()
-        {
-            string filter = "";
-
-            Dictionary<string, SerializeStructure>.ValueCollection dictionarySerializatorsValues = dictionarySerializators.Values;
-            foreach (SerializeStructure dictionarySerializatorsValuesItem in dictionarySerializatorsValues)
-            {
-                string extension = dictionarySerializatorsValuesItem.getExtension();
-                filter = filter + $"{dictionarySerializatorsValuesItem.getName()} (*.{extension})|*.{extension}|";
-            }
-
-            if (!filter.Equals(""))
-            {
-                filter = filter.Substring(0, filter.Length - 1);
-            }
-
-            return filter;
-        }
-
         public Type takeTypeSerializator(string extension)
         {
             Type typeSerializator = null;
@@ -56,6 +38,16 @@ namespace FactoryOOP_SiSharp_.Serializers
             }
             
             return typeSerializator;
+        }
+
+        public Dictionary<string, SerializeStructure> getDictionarySerializators()
+        {
+            return dictionarySerializators;
+        }
+
+        public bool checkContainsExtension(string extension)
+        {
+            return dictionarySerializators.ContainsKey(extension);
         }
     }   
 }

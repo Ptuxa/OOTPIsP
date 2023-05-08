@@ -5,6 +5,12 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FactoryOOP(SiSharp)", "FactoryOOP(SiSharp)\FactoryOOP(SiSharp).csproj", "{6CE8C9ED-F589-43ED-AB6B-A47A312F8F78}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PluginsDLL", "PluginsDLL", "{8772D38C-55E4-4529-84BE-257E5185E665}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncryptingAes", "EncryptingAes1\EncryptingAes.csproj", "{6EED0480-E40A-4ED0-85DA-1E54EDB8CF79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncryptingSha1", "EncryptingRsa1\EncryptingSha1.csproj", "{2B304CFF-F393-4B7F-942D-CBD9BB168720}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,14 @@ Global
 		{6CE8C9ED-F589-43ED-AB6B-A47A312F8F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CE8C9ED-F589-43ED-AB6B-A47A312F8F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CE8C9ED-F589-43ED-AB6B-A47A312F8F78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EED0480-E40A-4ED0-85DA-1E54EDB8CF79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EED0480-E40A-4ED0-85DA-1E54EDB8CF79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EED0480-E40A-4ED0-85DA-1E54EDB8CF79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EED0480-E40A-4ED0-85DA-1E54EDB8CF79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B304CFF-F393-4B7F-942D-CBD9BB168720}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B304CFF-F393-4B7F-942D-CBD9BB168720}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B304CFF-F393-4B7F-942D-CBD9BB168720}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B304CFF-F393-4B7F-942D-CBD9BB168720}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

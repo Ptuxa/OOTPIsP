@@ -14,7 +14,7 @@ namespace FactoryOOP_SiSharp_.Serializers
 {
     public class SerializerBinary : SerializeInterface
     {
-        public void serialize(List<DataFileStructure> listDataFileStructure, FileStream fileStream)
+        public void serialize(List<DataFileStructure> listDataFileStructure, Stream fileStream)
         {
             BinaryFormatter binaryFormatter = new BinaryFormatter();
 
@@ -25,17 +25,14 @@ namespace FactoryOOP_SiSharp_.Serializers
             catch
             {
                 DialogResult result = MessageBox.Show("Can't serialize data succcessfully", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);                
-            }
-            finally
-            {
-                fileStream.Close();
-            }                                        
+            }                                     
         }        
 
-        public List<DataFileStructure> deserialize(FileStream fileStream)
+        public List<DataFileStructure> deserialize(Stream fileStream)
         {
             List<DataFileStructure> listDataFileStructure = null;
 
+            fileStream.Position = 0;
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             
             try
@@ -46,10 +43,6 @@ namespace FactoryOOP_SiSharp_.Serializers
             {
                 DialogResult result = MessageBox.Show("Can't deserialize data succcessfully", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 listDataFileStructure = null;
-            }
-            finally
-            {
-                fileStream.Close();
             }
 
             return listDataFileStructure;

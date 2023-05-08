@@ -13,6 +13,10 @@ using FactoryOOP_SiSharp_.Structure;
 using FactoryOOP_SiSharp_.Serializers;
 using System.IO;
 using System.Reflection;
+using FactoryOOP_SiSharp_.Plugins;
+using System.IO.Pipes;
+using System.Security.Cryptography;
+
 
 namespace FactoryOOP_SiSharp_.Forms
 {
@@ -30,6 +34,8 @@ namespace FactoryOOP_SiSharp_.Forms
               
         DeviceFactory abstractFactory = new DeviceFactory();
         SerializeFactory serializeFactory = new SerializeFactory();
+        EncryptionFactory encryptionFactory = new EncryptionFactory();
+        string filter;
 
 
 
@@ -46,6 +52,37 @@ namespace FactoryOOP_SiSharp_.Forms
             }            
         }
 
+        public string takeStringFilter()
+        {
+            string filter = "";
+
+            Dictionary<string, SerializeStructure> dictionarySerializators = serializeFactory.getDictionarySerializators();
+            Dictionary<string, EncryptionStructure> dictionaryPlugin = encryptionFactory.getDictionaryPlugin();
+
+            Dictionary<string, SerializeStructure>.ValueCollection dictionarySerializatorsValues = dictionarySerializators.Values;
+            Dictionary<string, EncryptionStructure>.ValueCollection dictionaryPluginValues = dictionaryPlugin.Values;
+
+            foreach (SerializeStructure dictionarySerializatorsValuesItem in dictionarySerializatorsValues)
+            {
+                string baseFormat = "*." + dictionarySerializatorsValuesItem.getExtension(); ;
+
+                string format = baseFormat;
+                foreach (EncryptionStructure dictionaryPluginValuesItem in dictionaryPluginValues)
+                {
+                    format = format + ";" + baseFormat + "." + dictionaryPluginValuesItem.getExtension();
+                }
+
+                filter = filter + $"{dictionarySerializatorsValuesItem.getName()}|{format}|";
+            }
+
+            if (!filter.Equals(""))
+            {
+                filter = filter.Substring(0, filter.Length - 1);
+            }
+
+            return filter;
+        }
+
         public MainForm()
         {
             InitializeComponent();
@@ -53,6 +90,11 @@ namespace FactoryOOP_SiSharp_.Forms
 
             openFileDialog.InitialDirectory = Environment.CurrentDirectory;
             saveFileDialog.InitialDirectory = Environment.CurrentDirectory;
+
+            encryptionFactory.takePlugins();
+            filter = takeStringFilter();
+            openFileDialog.Filter = filter;
+            saveFileDialog.Filter = filter;
         }
 
 
@@ -128,6 +170,49 @@ namespace FactoryOOP_SiSharp_.Forms
             
         }
 
+        private string[] getExtensions(string path)
+        {
+            string[] arrStrPartsPath = path.Split('.');
+
+            string extensionSerializer = "";
+            string extensionEncrypting = "";
+
+            int lengthArrStrPartsPath = arrStrPartsPath.Length;
+            if (lengthArrStrPartsPath == 2)
+            {
+                if (serializeFactory.checkContainsExtension(arrStrPartsPath[lengthArrStrPartsPath - 1]))
+                {
+                    extensionSerializer = arrStrPartsPath[1];
+                }
+            }
+            else if (arrStrPartsPath.Length == 3)
+            {
+                if (encryptionFactory.checkContainsExtension(arrStrPartsPath[lengthArrStrPartsPath - 1]))
+                {
+                    extensionEncrypting = arrStrPartsPath[lengthArrStrPartsPath - 1];
+
+                    if (serializeFactory.checkContainsExtension(arrStrPartsPath[lengthArrStrPartsPath - 2]))
+                    {
+                        extensionSerializer = arrStrPartsPath[lengthArrStrPartsPath - 2];
+                    }
+                }
+            }
+            else if (arrStrPartsPath.Length == 4)
+            {
+                if (encryptionFactory.checkContainsExtension(arrStrPartsPath[lengthArrStrPartsPath - 2]))
+                {
+                    extensionEncrypting = arrStrPartsPath[lengthArrStrPartsPath - 2];
+
+                    if (serializeFactory.checkContainsExtension(arrStrPartsPath[lengthArrStrPartsPath - 3]))
+                    {
+                        extensionSerializer = arrStrPartsPath[lengthArrStrPartsPath - 3];
+                    }
+                }
+            }
+
+            return new string[] { extensionSerializer, extensionEncrypting };
+        }
+
         private void outputAllDevicesNamesInListBox(ref ListBox lstbxDevices, List<DeviceData> listEndDevices)
         {
             lstbxDevices.Items.Clear();
@@ -174,36 +259,83 @@ namespace FactoryOOP_SiSharp_.Forms
             return listEndDevices;
         }
 
-        private void mnOpen_Click(object sender, EventArgs e)
-        {
-            string filterStr = serializeFactory.takeStringFilterFromDictionary();
-            if (filterStr != "")
+        private MemoryStream callToDecrypt(FileStream fileStream, EncryptionInterface plugin)
+        {            
+            MemoryStream memoryStream = new MemoryStream();
+            
+            try
             {
-                openFileDialog.Filter = filterStr;
+                //EncryptionSha1 encryptionSha1 = new EncryptionSha1();
+                //encryptionSha1.decrypt(fileStream, memoryStream);             
+                plugin.decrypt(fileStream, memoryStream);
             }
-                        
+            catch
+            {
+                memoryStream = null;
+                DialogResult result = MessageBox.Show("Can't decrypt data succcessfully", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+            }                
+            
+            return memoryStream;
+        }
+
+        private List<DataFileStructure> callToDeserialize(Stream stream, string extension)
+        {
+            Type typeSerializator = serializeFactory.takeTypeSerializator(extension);
+            SerializeInterface serializator = (SerializeInterface)Activator.CreateInstance(typeSerializator);
+
+            List<DataFileStructure> tempList = serializator.deserialize(stream);
+
+            return tempList;
+        }
+
+        private void outputDataToInterfaceAfterDeserialization(List<DataFileStructure> tempList)
+        {
+            if (tempList != null)
+            {
+                listEndDevices = takeListEndDevices(tempList, listTypesDevices);
+                outputAllDevicesNamesInListBox(ref lstbxDevices, listEndDevices);
+                txtbxDeviceProperties.Clear();
+
+                if (listEndDevices.Count != 0)
+                {
+                    lstbxDevices.SelectedIndex = 0;
+                    outputDescriptionInTextBox(ref txtbxDeviceProperties, listEndDevices[lstbxDevices.SelectedIndex].getDescription());
+                }
+            }
+        }
+
+        private void mnOpen_Click(object sender, EventArgs e)
+        {        
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string path = openFileDialog.FileName;
-                string extension = path.Substring(path.LastIndexOf(".") + 1);
-                FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
 
-                Type typeSerializator = serializeFactory.takeTypeSerializator(extension);
-                SerializeInterface serializator = (SerializeInterface) Activator.CreateInstance(typeSerializator);
+                string[] extensions = getExtensions(path);
 
-                List<DataFileStructure> tempList = serializator.deserialize(fileStream);
-                if (tempList != null)
-                {
-                    listEndDevices = takeListEndDevices(tempList, listTypesDevices);
-                    outputAllDevicesNamesInListBox(ref lstbxDevices, listEndDevices);
-                    txtbxDeviceProperties.Clear();
-
-                    if (listEndDevices.Count != 0)
-                    {                        
-                        lstbxDevices.SelectedIndex = 0;
-                        outputDescriptionInTextBox(ref txtbxDeviceProperties, listEndDevices[lstbxDevices.SelectedIndex].getDescription());
-                    }                    
-                }                                               
+                if (extensions[0] != "")
+                {                    
+                    List<DataFileStructure> tempList = null;
+                    using (FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite))
+                    {
+                        EncryptionStructure encryptionStructure = encryptionFactory.tryGetEncryptionStructure(extensions[1]);
+                        if (encryptionStructure != null)
+                        {
+                            EncryptionInterface plugin = (EncryptionInterface)Activator.CreateInstance(encryptionStructure.getTypeEncryption());
+                            using (MemoryStream memoryStream = callToDecrypt(fileStream, plugin))
+                            {
+                                if (memoryStream != null)
+                                {
+                                    tempList = callToDeserialize(memoryStream, extensions[0]);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            tempList = callToDeserialize(fileStream, extensions[0]);
+                        }
+                    }
+                    outputDataToInterfaceAfterDeserialization(tempList);
+                }                    
             }
         }
 
@@ -219,23 +351,67 @@ namespace FactoryOOP_SiSharp_.Forms
             return listDataFileStructure;
         }
 
-        private void mnSave_Click(object sender, EventArgs e)
+        private void callToEncrypt(FileStream fileStream, EncryptionInterface plugin)
         {
-            string filterStr = serializeFactory.takeStringFilterFromDictionary();
-            if (filterStr != "")
+            try
             {
-                saveFileDialog.Filter = filterStr;
+                plugin.encrypt(fileStream);
+                //EncryptionSha1 encryptionSha1 = new EncryptionSha1();
+                //encryptionSha1.encrypt(fileStream);
+            }
+            catch
+            {
+                fileStream = null;
+                DialogResult result = MessageBox.Show("Can't encrypt data succcessfully", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+            }
+        }
+
+        private void callToSerialize(Stream stream, string extension)
+        {
+            Type typeSerializator = serializeFactory.takeTypeSerializator(extension);
+            SerializeInterface serializator = (SerializeInterface)Activator.CreateInstance(typeSerializator);
+
+            serializator.serialize(takeListForFileStrucuture(listEndDevices), stream);
+        }
+
+        private string createNewPath(string path, string[] extensions)
+        {
+            string newPath = path.Split('.').FirstOrDefault();
+            if (extensions[0] != "")
+            {
+                newPath = newPath + "." + extensions[0];
             }
 
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            if (extensions[1] != "")
             {
-                string path = saveFileDialog.FileName;
-                string extension = path.Substring(path.LastIndexOf(".") + 1);
-                FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+                newPath = newPath + "." + extensions[1];
+            }
 
-                Type typeSerializator = serializeFactory.takeTypeSerializator(extension);
-                SerializeInterface serializator = (SerializeInterface)Activator.CreateInstance(typeSerializator);
-                serializator.serialize(takeListForFileStrucuture(listEndDevices), fileStream);
+            return newPath;
+        }
+
+        private void mnSave_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {                
+                string path = saveFileDialog.FileName;
+                string[] extensions = getExtensions(path);
+                string newPath = createNewPath(path, extensions);
+
+                if (extensions[0] != "")
+                {                    
+                    using (FileStream fileStream = new FileStream(newPath, FileMode.Create, FileAccess.ReadWrite))
+                    {
+                        callToSerialize(fileStream, extensions[0]);
+
+                        EncryptionStructure encryptionStructure = encryptionFactory.tryGetEncryptionStructure(extensions[1]);
+                        if (encryptionStructure != null)
+                        {
+                            EncryptionInterface plugin = (EncryptionInterface)Activator.CreateInstance(encryptionStructure.getTypeEncryption());
+                            callToEncrypt(fileStream, plugin);
+                        }
+                    }
+                }                                      
             }
         }
     }

@@ -10,8 +10,8 @@ namespace FactoryOOP_SiSharp_.Serializers
 {
     public interface SerializeInterface
     {
-        void serialize(List<DataFileStructure> listEndDevices, FileStream fileStream);
+        void serialize(List<DataFileStructure> listEndDevices, Stream fileStream);
 
-        List<DataFileStructure> deserialize(FileStream fileStream);
+        List<DataFileStructure> deserialize(Stream fileStream);
     }
 }

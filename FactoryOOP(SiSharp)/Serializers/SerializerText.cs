@@ -71,25 +71,22 @@ namespace FactoryOOP_SiSharp_.Serializers
             return sb.ToString();
         }
 
-        public void serialize(List<DataFileStructure> listDataFileStructure, FileStream fileStream)
+        public void serialize(List<DataFileStructure> listDataFileStructure, Stream fileStream)
         {
             StreamWriter streamWriter = new StreamWriter(fileStream);
-
+            
             string serializeText = createStringToSerialize(listDataFileStructure);
 
             try
             {
                 streamWriter.Write(serializeText);
+                streamWriter.Flush();
             }
             catch
             {
                 DialogResult result = MessageBox.Show("Can't serialize data succcessfully", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
             }
-            finally
-            {
-                streamWriter.Close();
-                fileStream.Close();
-            }
+                     
         }
 
         private InteractionInterfaceGeneral getType(string name, string strValue)
@@ -348,7 +345,7 @@ namespace FactoryOOP_SiSharp_.Serializers
             {
                 if (!arrStrDeserialize[i].Equals(""))
                 {
-                    int indexDelimiter = arrStrDeserialize[i].LastIndexOf(DELIMITER_NAME_AND_VALUE);
+                    int indexDelimiter = arrStrDeserialize[i].IndexOf(DELIMITER_NAME_AND_VALUE);
                     string name = arrStrDeserialize[i].Substring(0, indexDelimiter);
                     string strValue = arrStrDeserialize[i].Substring(indexDelimiter + lengthDelimiterNameAndValue, arrStrDeserialize[i].Length - (indexDelimiter + lengthDelimiterNameAndValue));
 
@@ -359,33 +356,37 @@ namespace FactoryOOP_SiSharp_.Serializers
             return listDataDeserialize;
         }
 
-        public List<DataFileStructure> deserialize(FileStream fileStream)
+        public List<DataFileStructure> deserialize(Stream fileStream)
         {
             List<DataFileStructure> listDataFileStructure = null;
 
-            StreamReader streamReader = new StreamReader(fileStream);
-            string deserializeText = "";
+            fileStream.Position = 0;    
+            using (StreamReader streamReader = new StreamReader(fileStream))
+            {               
+                string deserializeText = "";
 
-            bool isCorrect = true;            
-            try
-            {
-                deserializeText = streamReader.ReadToEnd();
-            }
-            catch
-            {
-                isCorrect = false;
-                DialogResult result = MessageBox.Show("Can't serialize data succcessfully", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-            }
-            finally
-            {
-                streamReader.Close();
-                fileStream.Close();
-            }
+                bool isCorrect = true;
+                try
+                {
+                    deserializeText = streamReader.ReadToEnd();
+                }
+                catch
+                {
+                    isCorrect = false;
+                    DialogResult result = MessageBox.Show("Can't serialize data succcessfully", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                }
 
-            if (isCorrect)
-            {
-                List<DataTokens> listDataDeserialize = takeListDataDeserialize(deserializeText);
-                listDataFileStructure = createDataFileStructureListFromText(listDataDeserialize);
+
+                //finally
+                //{
+                //    streamReader.Close();
+                //}
+
+                if (isCorrect)
+                {
+                    List<DataTokens> listDataDeserialize = takeListDataDeserialize(deserializeText);
+                    listDataFileStructure = createDataFileStructureListFromText(listDataDeserialize);
+                }
             }
 
             return listDataFileStructure;
