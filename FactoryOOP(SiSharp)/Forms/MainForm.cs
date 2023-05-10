@@ -265,8 +265,8 @@ namespace FactoryOOP_SiSharp_.Forms
             
             try
             {
-                //EncryptionSha1 encryptionSha1 = new EncryptionSha1();
-                //encryptionSha1.decrypt(fileStream, memoryStream);             
+                //EncryptionDes encryptionDes = new EncryptionDes();
+                //encryptionDes.decrypt(fileStream, memoryStream);             
                 plugin.decrypt(fileStream, memoryStream);
             }
             catch
@@ -356,8 +356,8 @@ namespace FactoryOOP_SiSharp_.Forms
             try
             {
                 plugin.encrypt(fileStream);
-                //EncryptionSha1 encryptionSha1 = new EncryptionSha1();
-                //encryptionSha1.encrypt(fileStream);
+                //EncryptionDes encryptionDes = new EncryptionDes();
+                //encryptionDes.encrypt(fileStream);
             }
             catch
             {

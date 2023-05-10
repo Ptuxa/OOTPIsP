@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6EED0480-E40A-4ED0-85DA-1E54EDB8CF79}</ProjectGuid>
+    <ProjectGuid>{2599421C-6C4C-4B63-9F25-F07FCBE8FE21}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EncryptingAes1</RootNamespace>
-    <AssemblyName>EncryptingAes1</AssemblyName>
+    <RootNamespace>EncryptingDes</RootNamespace>
+    <AssemblyName>EncryptingDes</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EncryptingAes.cs" />
+    <Compile Include="EncryptionDes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

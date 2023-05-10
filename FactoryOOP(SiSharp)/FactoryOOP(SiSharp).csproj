@@ -101,7 +101,7 @@
     <Compile Include="Devices\Laptop.cs" />
     <Compile Include="Devices\ProcessorInfo.cs" />
     <Compile Include="Devices\Smartphone.cs" />
-    <Compile Include="EncryptedSha1.cs" />
+    <Compile Include="EncryptionSha1.cs" />
     <Compile Include="EncryptionAes.cs" />
     <Compile Include="Factories\DesktopFactory.cs" />
     <Compile Include="Factories\DeviceFactory.cs" />
@@ -156,6 +156,7 @@
     <Compile Include="Structure\DeviceTypeEnum.cs" />
     <Compile Include="Structure\DeviceTypeIndexing.cs" />
     <Compile Include="Structure\DataFileldsInfo.cs" />
+    <Compile Include="EncryptionDes.cs" />
     <EmbeddedResource Include="Forms\DesktopPropertiesForm.resx">
       <DependentUpon>DesktopPropertiesForm.cs</DependentUpon>
     </EmbeddedResource>
